@@ -13,7 +13,7 @@ public class WebServiceTest extends TestCase {
 	
 	protected void setUp(){
 		webService = new WebService();
-		wsdlUrl = "http://exlibris.com";
+		wsdlUrl = "http://primo.getty.edu";
 		try {
 			url = new URL(wsdlUrl);
 			webService.setUrl(url);
@@ -28,6 +28,13 @@ public class WebServiceTest extends TestCase {
 	}
 	
 	public void testConnectToWebService() {
-		assertTrue(webService.Connect());
+		assertTrue(webService.connect());
+	}
+	
+	public void testSearch() {
+		String scope = "GETTY_ALMA";
+		String title = "c++";
+		webService.connect();
+		assertNotNull(webService.search(scope, title));
 	}
 }
