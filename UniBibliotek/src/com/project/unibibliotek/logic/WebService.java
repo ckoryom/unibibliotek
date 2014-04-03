@@ -1,6 +1,7 @@
 package com.project.unibibliotek.logic;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -11,8 +12,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.project.unibibliotek.model.Book;
+import com.project.unibibliotek.utils.NetworkUtils;
 import com.project.unibibliotek.utils.XmlUtils;
 
+import android.R.xml;
 import android.util.Log;
 
 import primo4j.PrimoX;
@@ -81,13 +84,11 @@ public class WebService {
 			Query query = new Query(scope, title);
 
 			try {
-				Log.d(TAG,"XSERVICE:" + query.getXservicePath());
-				QueryResult queryResult = primoService.search(query);
-				XmlUtils utils = new XmlUtils();
-				String strXml = queryResult.getResponse().asString();
-				Document xmlResult = utils.convertStringToDocument(strXml);
-				Element rootElement = xmlResult.getDocumentElement();
+				NetworkUtils networkUtils = new NetworkUtils();
+				InputStream stream = networkUtils.downloadUrl(getFullUrl() + query.getXservicePath());
+				XmlUtils xmlUtils = new XmlUtils();
 				List<Book> books = new ArrayList<Book>();
+				books = xmlUtils.parse(stream);
 				if(books.isEmpty())
 					return null;
 				else

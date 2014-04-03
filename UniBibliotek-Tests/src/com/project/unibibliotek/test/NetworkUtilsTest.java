@@ -2,11 +2,13 @@ package com.project.unibibliotek.test;
 
 import java.io.IOException;
 
+import android.test.AndroidTestCase;
+
 import com.project.unibibliotek.utils.NetworkUtils;
 
 import junit.framework.TestCase;
 
-public class NetworkUtilsTest extends TestCase {
+public class NetworkUtilsTest extends AndroidTestCase {
 
 	private String urlString;
 	

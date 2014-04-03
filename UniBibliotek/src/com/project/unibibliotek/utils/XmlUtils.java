@@ -16,6 +16,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import com.project.unibibliotek.model.Book;
 
+import android.util.Log;
 import android.util.Xml;
 
 public class XmlUtils {
@@ -40,7 +41,7 @@ public class XmlUtils {
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.setInput(in, null);
+            parser.setInput(in, "utf-8");
             parser.nextTag();
             return readFeed(parser);
         } finally {
@@ -48,27 +49,48 @@ public class XmlUtils {
         }
     }
 	
+//	private List<Book> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+//	    List<Book> entries = new ArrayList<Book>();
+//
+//	    parser.require(XmlPullParser.START_TAG, ns, "sear:SEGMENTS");
+//	    while (parser.next() != XmlPullParser.END_TAG || parser.isEmptyElementTag()) {
+//	        if (parser.isEmptyElementTag()) {
+//	        	parser.next();
+//	        }
+//	    	if (parser.getEventType() != XmlPullParser.START_TAG) {
+//	            continue;
+//	        }
+//	        String name = parser.getName();
+//	        // Starts by looking for the entry tag
+//	        if (name.equals("record")) {
+//	            entries.add(readBook(parser));
+//	        } else {
+//	            parser = skip(parser);
+//	            name = parser.getName();
+//	            Log.d("a","ERROR:"+name);
+//	        }
+//	    }  
+//	    return entries;
+//	}
+	
 	private List<Book> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
 	    List<Book> entries = new ArrayList<Book>();
+	    while (parser.next() != XmlPullParser.END_DOCUMENT) {
 
-	    parser.require(XmlPullParser.START_TAG, ns, "feed");
-	    while (parser.next() != XmlPullParser.END_TAG) {
-	        if (parser.getEventType() != XmlPullParser.START_TAG) {
-	            continue;
-	        }
 	        String name = parser.getName();
 	        // Starts by looking for the entry tag
-	        if (name.equals("record")) {
-	            entries.add(readBook(parser));
-	        } else {
-	            skip(parser);
+	        if (name != null) {
+		        if (name.equals("display")) {
+		            entries.add(readBook(parser));
+		        }
 	        }
 	    }  
 	    return entries;
 	}
 	
+	
 	private Book readBook(XmlPullParser parser) throws XmlPullParserException, IOException {
-	    parser.require(XmlPullParser.START_TAG, ns, "entry");
+	    parser.require(XmlPullParser.START_TAG, ns, "display");
 	    Book book = new Book();
 	    while (parser.next() != XmlPullParser.END_TAG) {
 	        if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -78,13 +100,13 @@ public class XmlUtils {
 	        if (name.equals("title")) {
 	            book.setTitle(readTitle(parser));
 	        } else {
-	            skip(parser);
+	            parser = skip(parser);
 	        }
 	    }
 	    return book;
 	}
 	
-	private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
+	private XmlPullParser skip(XmlPullParser parser) throws XmlPullParserException, IOException {
 	    if (parser.getEventType() != XmlPullParser.START_TAG) {
 	        throw new IllegalStateException();
 	    }
@@ -99,6 +121,7 @@ public class XmlUtils {
 	            break;
 	        }
 	    }
+	    return parser;
 	 }
 	
 	private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {

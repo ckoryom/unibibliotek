@@ -5,12 +5,12 @@ import java.io.InputStream;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.test.AndroidTestCase;
+
 import com.project.unibibliotek.utils.NetworkUtils;
 import com.project.unibibliotek.utils.XmlUtils;
 
-import junit.framework.TestCase;
-
-public class XmlUtilsTest extends TestCase {
+public class XmlUtilsTest extends AndroidTestCase {
 
 	private String strXml;
 	
