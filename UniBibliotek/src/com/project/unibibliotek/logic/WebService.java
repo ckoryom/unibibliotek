@@ -7,7 +7,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import com.project.unibibliotek.model.Book;
+import com.project.unibibliotek.utils.XmlUtils;
 
 import android.util.Log;
 
@@ -15,6 +19,7 @@ import primo4j.PrimoX;
 import primo4j.action.QueryResult;
 import primo4j.action.QueryResultItem;
 import primo4j.data.Query;
+import primo4j.data.QueryCriteria;
 import primo4j.util.PrimoException;
 
 public class WebService {
@@ -74,18 +79,15 @@ public class WebService {
 	public List<Book> search(String scope, String title) {
 		if(primoService != null) {
 			Query query = new Query(scope, title);
+
 			try {
+				Log.d(TAG,"XSERVICE:" + query.getXservicePath());
 				QueryResult queryResult = primoService.search(query);
-				List<QueryResultItem> queryList = queryResult.getResults();
-				Iterator<QueryResultItem> iterator = queryList.iterator();
+				XmlUtils utils = new XmlUtils();
+				String strXml = queryResult.getResponse().asString();
+				Document xmlResult = utils.convertStringToDocument(strXml);
+				Element rootElement = xmlResult.getDocumentElement();
 				List<Book> books = new ArrayList<Book>();
-				while(iterator.hasNext()){
-					QueryResultItem item = (QueryResultItem) iterator.next();
-					Book book = new Book();
-					book.setTitle(item.getDocTitle());
-					books.add(book);
-					Log.d(TAG,"TITLE:" + book.getTitle());
-				}
 				if(books.isEmpty())
 					return null;
 				else

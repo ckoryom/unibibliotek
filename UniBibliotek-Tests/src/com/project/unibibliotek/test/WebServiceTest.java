@@ -13,7 +13,8 @@ public class WebServiceTest extends TestCase {
 	
 	protected void setUp(){
 		webService = new WebService();
-		wsdlUrl = "http://primo.getty.edu";
+		//wsdlUrl = "http://primo.getty.edu";
+		wsdlUrl = "http://ubz-primo-test.hosted.exlibrisgroup.com/PrimoWebServices/services/tags";
 		try {
 			url = new URL(wsdlUrl);
 			webService.setUrl(url);
@@ -32,7 +33,8 @@ public class WebServiceTest extends TestCase {
 	}
 	
 	public void testSearch() {
-		String scope = "GETTY_ALMA";
+		//String scope = "GETTY_ALMA";
+		String scope = "39UBZ";
 		String title = "c++";
 		webService.connect();
 		assertNotNull(webService.search(scope, title));
