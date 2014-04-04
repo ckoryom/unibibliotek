@@ -2,10 +2,12 @@ package com.project.unibibliotek.test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import android.test.AndroidTestCase;
 
 import com.project.unibibliotek.logic.WebService;
+import com.project.unibibliotek.model.Book;
 
 public class WebServiceTest extends AndroidTestCase {
 	private WebService webService;
@@ -40,6 +42,7 @@ public class WebServiceTest extends AndroidTestCase {
 		String scope = "BCL";
 		String title = "c++";
 		webService.connect();
-		assertTrue(webService.search(scope, title).size()>0);
+		List<Book> books = webService.search(scope, title);
+		assertTrue(books.size()>0);
 	}
 }
