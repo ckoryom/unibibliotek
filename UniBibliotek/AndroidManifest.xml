@@ -3,11 +3,11 @@
     package="com.project.unibibliotek"
     android:versionCode="1"
     android:versionName="1.0" >
-	
-    <uses-permission android:name="android.permission.INTERNET"/>
-    
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 
     <application
@@ -23,6 +23,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.project.unibibliotek.SearchActivity"
+            android:label="@string/title_activity_search"
+            android:parentActivityName="com.project.unibibliotek.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.project.unibibliotek.MainActivity" />
         </activity>
     </application>
 
