@@ -43,7 +43,6 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /** Called when the user clicks the Send button */
     public void pushSearchView(View view) 
     {
     	Intent intent = new Intent(this, SearchActivity.class);
