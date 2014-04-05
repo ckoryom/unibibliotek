@@ -3,13 +3,15 @@ package com.project.unibibliotek.logic;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.xmlpull.v1.XmlPullParserException;
 
 
 
 import com.project.unibibliotek.model.Book;
+import com.project.unibibliotek.model.WebServiceParameters;
 import com.project.unibibliotek.utils.NetworkUtils;
 import com.project.unibibliotek.utils.XmlUtils;
 
@@ -22,19 +24,26 @@ import primo4j.data.Query;
 
 
 public class WebService {
-	private String wsdl;
-	
-	private URL url;
-	
+
 	private static final String TAG = "WebService";
 	
 	private PrimoX primoService;
 	
+	private WebServiceParameters parameters;
+	
 	public WebService(){
-		wsdl = "bc-primo.hosted.exlibrisgroup.com";
-		url = null;
+		parameters = null;
 		primoService = null;
-
+		XmlUtils xmlUtils = new XmlUtils();
+		try {
+			parameters = xmlUtils.getWebServiceParameters();
+		} catch (XmlPullParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public Boolean checkUrl() {
@@ -42,7 +51,7 @@ public class WebService {
 		HttpURLConnection huc;
 		int responseCode;
 		try {
-			huc = (HttpURLConnection) url.openConnection();
+			huc = (HttpURLConnection) parameters.getUrl().openConnection();
 			responseCode = huc.getResponseCode();
 			if (responseCode != 404) {
 				return true;
@@ -56,7 +65,7 @@ public class WebService {
 	}
 	
 	private String getFullUrl(){
-		return url.getProtocol() + "://" + url.getHost();
+		return parameters.getUrl().getProtocol() + "://" + parameters.getUrl().getHost();
 	}
 	
 	public Boolean connect() {
@@ -75,14 +84,16 @@ public class WebService {
 		}
 	}
 	
-	public List<Book> search(String scope, String title) {
+	public List<Book> search(String title) {
 		if(primoService != null) {
-			Query query = new Query(scope, title);
+			Query query = new Query(parameters.getScope(), title);
 
 			try {
-				NetworkUtils networkUtils = new NetworkUtils();
-				InputStream stream = networkUtils.downloadUrl(getFullUrl() + query.getXservicePath());
 				XmlUtils xmlUtils = new XmlUtils();
+				NetworkUtils networkUtils = new NetworkUtils();
+
+				InputStream stream = networkUtils.downloadUrl(getFullUrl() + query.getXservicePath());
+				
 				List<Book> books = new ArrayList<Book>();
 				books = xmlUtils.parse(stream);
 				if(books.isEmpty())
@@ -100,24 +111,5 @@ public class WebService {
 			return null;
 		}
 	}
-	
-	public String getWsdl() {
-		return wsdl;
-	}
-
-	public void setWsdl(String wsdl) {
-		this.wsdl = wsdl;
-	}
-
-	public URL getUrl() {
-		return url;
-	}
-
-	public void setUrl(URL url) {
-		this.url = url;
-	}
-
-
-	
 
 }

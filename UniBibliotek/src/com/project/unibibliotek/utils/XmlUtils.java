@@ -3,6 +3,7 @@ package com.project.unibibliotek.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import com.project.unibibliotek.model.Availability;
 import com.project.unibibliotek.model.Book;
 import com.project.unibibliotek.model.Location;
 import com.project.unibibliotek.model.ResourceType;
+import com.project.unibibliotek.model.WebServiceParameters;
 
 import android.util.Xml;
 
@@ -49,6 +51,52 @@ public class XmlUtils {
         }
     }
 	
+	public WebServiceParameters getWebServiceParameters() throws XmlPullParserException, IOException {
+		InputStream in = null;
+		WebServiceParameters parameters = null;
+		try {
+			
+			in = getClass().getClassLoader().getResourceAsStream("webservice.xml");
+			if (in != null) {
+				XmlPullParser parser = Xml.newPullParser();
+				parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+	            parser.setInput(in, null);
+	            
+	            int eventType = parser.getEventType();
+	            while (eventType != XmlPullParser.END_DOCUMENT) {
+	            	String name = null;
+	            	switch (eventType) {
+						case XmlPullParser.START_TAG:
+							name = parser.getName();
+							if (name.equals("webservice")) {
+								parameters = new WebServiceParameters();
+							}
+							else if (name.equals("wsdl")) {
+								URL url = new URL(parser.nextText());
+								parameters.setUrl(url);
+							}
+							else if (name.equals("scope")) {
+								parameters.setScope(parser.nextText());
+							}
+							break;
+						case XmlPullParser.END_TAG:
+							name = parser.getName();
+							if (name.equalsIgnoreCase("webservice")) {
+								return parameters;
+							}
+						default:
+							break;
+					}
+	            	eventType = parser.next();
+	            }
+	            return parameters;
+			}
+			return parameters;
+		} finally {
+            in.close();
+        }
+	}
+	
 	private List<Book> parseXML (XmlPullParser parser) throws XmlPullParserException, IOException {
 		List<Book> books = null;
 		int eventType = parser.getEventType();
@@ -60,7 +108,6 @@ public class XmlUtils {
 		
 		Boolean facets = false;
 		Boolean addata = false;
-		Boolean locationData = false;
 		
 		while (eventType != XmlPullParser.END_DOCUMENT) {
 			String name = null;

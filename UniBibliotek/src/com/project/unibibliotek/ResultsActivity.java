@@ -32,7 +32,7 @@ public class ResultsActivity extends ActionBarActivity {
         
         //TODO: request results and display them in a list
         librarian = new WebService();
-        booksList = librarian.search("",bookTitleToSearch);
+        booksList = librarian.search(bookTitleToSearch);
         //In progress..
 	}
 
