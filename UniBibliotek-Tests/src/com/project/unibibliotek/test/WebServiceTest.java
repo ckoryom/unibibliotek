@@ -2,18 +2,23 @@ package com.project.unibibliotek.test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+
+import android.test.AndroidTestCase;
+
 import com.project.unibibliotek.logic.WebService;
+import com.project.unibibliotek.model.Book;
 
-import junit.framework.TestCase;
-
-public class WebServiceTest extends TestCase {
+public class WebServiceTest extends AndroidTestCase {
 	private WebService webService;
 	private String wsdlUrl;
 	private URL url;
 	
 	protected void setUp(){
 		webService = new WebService();
-		wsdlUrl = "http://exlibris.com";
+		//wsdlUrl = "http://primo.getty.edu";
+		//wsdlUrl = "http://ubz-primo-test.hosted.exlibrisgroup.com/PrimoWebServices/services/tags";
+		wsdlUrl = "http://bc-primo.hosted.exlibrisgroup.com/PrimoWebServices/services/tags";
 		try {
 			url = new URL(wsdlUrl);
 			webService.setUrl(url);
@@ -28,6 +33,16 @@ public class WebServiceTest extends TestCase {
 	}
 	
 	public void testConnectToWebService() {
-		assertTrue(webService.Connect());
+		assertTrue(webService.connect());
+	}
+	
+	public void testSearch() {
+		//String scope = "GETTY_ALMA";
+		//String scope = "39UBZ";
+		String scope = "BCL";
+		String title = "c++";
+		webService.connect();
+		List<Book> books = webService.search(scope, title);
+		assertTrue(books.size()>0);
 	}
 }
