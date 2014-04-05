@@ -4,5 +4,9 @@
     <string name="app_name">Uni Bibliotek</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="intro_screen_logo1_description">Univercity Logo</string>
+    <string name="intro_screen_logo2_description">Library Logo</string>
+    <string name="intro_screen_button_title">Find a Book</string>
+    <string name="title_activity_search">SearchActivity</string>
 
 </resources>
