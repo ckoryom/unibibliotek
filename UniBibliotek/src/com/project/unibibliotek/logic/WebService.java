@@ -5,25 +5,21 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+
 
 import com.project.unibibliotek.model.Book;
 import com.project.unibibliotek.utils.NetworkUtils;
 import com.project.unibibliotek.utils.XmlUtils;
 
-import android.R.xml;
+
 import android.util.Log;
 
 import primo4j.PrimoX;
-import primo4j.action.QueryResult;
-import primo4j.action.QueryResultItem;
+
 import primo4j.data.Query;
-import primo4j.data.QueryCriteria;
-import primo4j.util.PrimoException;
+
 
 public class WebService {
 	private String wsdl;

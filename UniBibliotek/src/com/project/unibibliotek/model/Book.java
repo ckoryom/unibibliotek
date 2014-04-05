@@ -1,6 +1,5 @@
 package com.project.unibibliotek.model;
 
-import java.lang.reflect.Array;
 import java.util.List;
 
 public class Book {
@@ -9,7 +8,44 @@ public class Book {
 	private String year;
 	private List<String> isbn;
 	private String publisher;
+	private String language;
+	private Availability availability;
+	private String description;
+	private String topic;
 	
+	
+	public String getTopic() {
+		return topic;
+	}
+
+	public void setTopic(String topic) {
+		this.topic = topic;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public Availability getAvailability() {
+		return availability;
+	}
+
+	public void setAvailability(Availability availability) {
+		this.availability = availability;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public String getTitle() {
 		return title;
 	}
