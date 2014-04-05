@@ -17,6 +17,9 @@ import org.xmlpull.v1.XmlPullParserException;
 import com.project.unibibliotek.model.Author;
 import com.project.unibibliotek.model.Availability;
 import com.project.unibibliotek.model.Book;
+import com.project.unibibliotek.model.Location;
+import com.project.unibibliotek.model.ResourceType;
+
 import android.util.Xml;
 
 public class XmlUtils {
@@ -52,9 +55,12 @@ public class XmlUtils {
 		Book currentBook = null;
 		Author author = null;
 		List<String> isbn = null;
+		List<Location> locations = null;
+		Location currentLocation = null;
 		
 		Boolean facets = false;
 		Boolean addata = false;
+		Boolean locationData = false;
 		
 		while (eventType != XmlPullParser.END_DOCUMENT) {
 			String name = null;
@@ -68,6 +74,22 @@ public class XmlUtils {
 						currentBook = new Book();
 						author = new Author();
 						isbn = new ArrayList<String>();
+						locations = null;
+					}
+					else if (name.equals("sear:LIBRARIES")) {
+						locations = new ArrayList<Location>();
+					}
+					else if (locations != null) {
+						if (name.equals("sear:collection")) {
+							currentLocation = new Location();
+							currentLocation.setSite(parser.nextText());
+						}
+						else if (name.equals("sear:callNumber")) {
+							currentLocation.setSection(parser.nextText());
+							locations.add(currentLocation);
+							currentLocation = null;
+						}
+							
 					}
 					else if (currentBook != null) {
 						if (name.equals("facets")) {
@@ -89,6 +111,14 @@ public class XmlUtils {
 								else if (value.equals("online_resources"))
 									currentBook.setAvailability(Availability.online_resources);
 							}
+							else if (name.equals("rsrctype")) {
+								String value = parser.nextText();
+								if (value.equals("book"))
+									currentBook.setResourceType(ResourceType.book);
+								else if (value.equals("ebook"))
+									currentBook.setResourceType(ResourceType.ebook);
+							}
+							
 						}
 						else if (addata) {
 							if (name.equals("aulast")) {
@@ -127,6 +157,15 @@ public class XmlUtils {
 						currentBook.setAuthor(author);
 						currentBook.setIsbn(isbn);
 						books.add(currentBook);
+					}
+					else if (name.equalsIgnoreCase("sear:LIBRARIES") && locations != null) {
+						if (books != null && books.size()>0) {
+							int index = books.size()-1;
+							Book previousBook = books.get(index);
+							previousBook.setLocations(locations);
+							books.set(index, previousBook);
+							locations = null;
+						}
 					}
 				default:
 					break;
