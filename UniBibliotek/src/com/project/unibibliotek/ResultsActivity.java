@@ -30,6 +30,7 @@ public class ResultsActivity extends Activity {
 		setContentView(R.layout.activity_results);
 
 		ActionBar bar = getActionBar();
+		bar.setDisplayHomeAsUpEnabled(true);
         bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#E1A22E")));
         
         Intent intent = getIntent();
@@ -44,6 +45,11 @@ public class ResultsActivity extends Activity {
         {
         	Book book = booksList.get(i);
         	booksArray[i] = book.getTitle();
+        }
+        if (booksList.size() == 0)
+        {
+        	booksArray = new String[1];
+        	booksArray[0] = "No results found.";
         }
         //booksList.toArray(booksArray);
         
@@ -70,17 +76,27 @@ public class ResultsActivity extends Activity {
 		getMenuInflater().inflate(R.menu.results, menu);
 		return true;
 	}
-
+	
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) 
+	{
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+	    switch (item.getItemId()) 
+	    {
+	        case android.R.id.home:
+	            // app icon in action bar clicked; go home
+//	            Intent intent = new Intent(this, HomeActivity.class);
+//	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//	            startActivity(intent);
+	        	this.finish();
+	            return true;
+	        case R.id.action_settings:
+	        return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 
 }
