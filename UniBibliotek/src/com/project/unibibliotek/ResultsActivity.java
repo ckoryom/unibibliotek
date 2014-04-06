@@ -1,7 +1,5 @@
 package com.project.unibibliotek;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 import android.app.ActionBar;
@@ -39,11 +37,8 @@ public class ResultsActivity extends Activity {
         
         //TODO: request results and display them in a list
         librarian = new WebService();
-        try {
-			librarian.setUrl(new URL("http://ubz-primo-test.hosted.exlibrisgroup.com/PrimoWebServices/services/tags"));
-		} catch (MalformedURLException e) { e.printStackTrace(); }
         librarian.connect();
-        booksList = librarian.search("39UBZ",bookTitleToSearch);
+        booksList = librarian.search(bookTitleToSearch);
         String[] booksArray = new String[booksList.size()];
         for (int i=0; i<booksList.size(); i++)
         {

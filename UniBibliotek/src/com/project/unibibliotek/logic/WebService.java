@@ -11,6 +11,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 
 import com.project.unibibliotek.model.Book;
+import com.project.unibibliotek.model.ThreadStatus;
 import com.project.unibibliotek.model.WebServiceParameters;
 import com.project.unibibliotek.utils.NetworkUtils;
 import com.project.unibibliotek.utils.XmlUtils;
@@ -31,6 +32,10 @@ public class WebService {
 	
 	private WebServiceParameters parameters;
 	
+	private ThreadStatus threadStatus;
+	
+	private List<Book> books;
+	
 	public WebService(){
 		parameters = null;
 		primoService = null;
@@ -47,21 +52,40 @@ public class WebService {
 	}
 	
 	public Boolean checkUrl() {
-		
-		HttpURLConnection huc;
-		int responseCode;
-		try {
-			huc = (HttpURLConnection) parameters.getUrl().openConnection();
-			responseCode = huc.getResponseCode();
-			if (responseCode != 404) {
-				return true;
-			} else {
-				return false;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
+		final List<Boolean> results = new ArrayList<Boolean>();
+		Thread thread = new Thread(new Runnable(){
+		    @Override
+		    public void run() {
+		        try {
+		        	threadStatus = ThreadStatus.WORKING;
+		        	HttpURLConnection huc;
+		    		int responseCode;
+		    		try {
+		    			huc = (HttpURLConnection) parameters.getUrl().openConnection();
+		    			responseCode = huc.getResponseCode();
+		    			if (responseCode != 404) {
+		    				results.add(true);
+		    			} else {
+		    				results.add(false);
+		    			}
+		    		} catch (IOException e) {
+		    			e.printStackTrace();
+		    			results.add(false);
+		    		}
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		        threadStatus = ThreadStatus.FINISHED;
+		        Thread.currentThread().interrupt();
+		    }
+		} );
+		threadStatus = ThreadStatus.NONE;
+		thread.start(); 
+		while (threadStatus != ThreadStatus.FINISHED) {
+			if (results.size()>0)
+				return results.get(0);
 		}
+		return results.get(0);
 	}
 	
 	private String getFullUrl(){
@@ -84,27 +108,43 @@ public class WebService {
 		}
 	}
 	
-	public List<Book> search(String title) {
+	public List<Book> search(final String title) {
 		if(primoService != null) {
-			Query query = new Query(parameters.getScope(), title);
+			threadStatus = ThreadStatus.NONE;
+			books = null;
+			Thread thread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					threadStatus = ThreadStatus.WORKING;
+					Query query = new Query(parameters.getScope(), title);
 
-			try {
-				XmlUtils xmlUtils = new XmlUtils();
-				NetworkUtils networkUtils = new NetworkUtils();
+					try {
+						XmlUtils xmlUtils = new XmlUtils();
+						NetworkUtils networkUtils = new NetworkUtils();
 
-				InputStream stream = networkUtils.downloadUrl(getFullUrl() + query.getXservicePath());
-				
-				List<Book> books = new ArrayList<Book>();
-				books = xmlUtils.parse(stream);
-				if(books.isEmpty())
-					return null;
-				else
+						InputStream stream = networkUtils.downloadUrl(getFullUrl() + query.getXservicePath());
+						
+						books = new ArrayList<Book>();
+						books = xmlUtils.parse(stream);
+						
+					}
+					catch (Exception e){
+						Log.e(TAG,"Problem while searching primo: " + e.getMessage());
+					}
+					threadStatus = ThreadStatus.FINISHED;
+					Thread.currentThread().interrupt();
+					
+					
+					
+				}
+			});
+			thread.start();
+			while (threadStatus != ThreadStatus.FINISHED) {
+				if (threadStatus == ThreadStatus.FINISHED)
 					return books;
 			}
-			catch (Exception e){
-				Log.e(TAG,"Problem while searching primo: " + e.getMessage());
-				return null;
-			}
+			return books;
+			
 		}
 		else{
 			Log.e(TAG,"PrimoService is null");
