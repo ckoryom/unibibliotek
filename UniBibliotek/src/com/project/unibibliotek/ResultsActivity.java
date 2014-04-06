@@ -44,6 +44,8 @@ public class ResultsActivity extends Activity {
         for (int i=0; i<booksList.size(); i++)
         {
         	Book book = booksList.get(i);
+        	if (book.getTitle() == null)
+        		book.setTitle("no title");
         	booksArray[i] = book.getTitle();
         }
         if (booksList.size() == 0)
