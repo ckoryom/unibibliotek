@@ -35,4 +35,16 @@ public class XmlUtilsTest extends AndroidTestCase {
 		
 	}
 	
+	public void testGetWebServiceParameters () {
+		try {
+			assertNotNull(xmlUtils.getWebServiceParameters());
+		} catch (XmlPullParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }

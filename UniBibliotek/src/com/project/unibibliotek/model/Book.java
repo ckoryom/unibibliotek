@@ -4,16 +4,43 @@ import java.util.List;
 
 public class Book {
 	private String title;
+	
 	private Author author;
+	
 	private String year;
+	
 	private List<String> isbn;
+	
 	private String publisher;
+	
 	private String language;
+	
 	private Availability availability;
+	
 	private String description;
+	
 	private String topic;
 	
+	private ResourceType resourceType;
 	
+	private List<Location> locations; 
+
+	public List<Location> getLocations() {
+		return locations;
+	}
+
+	public void setLocations(List<Location> locations) {
+		this.locations = locations;
+	}
+
+	public ResourceType getResourceType() {
+		return resourceType;
+	}
+
+	public void setResourceType(ResourceType resourceType) {
+		this.resourceType = resourceType;
+	}
+
 	public String getTopic() {
 		return topic;
 	}

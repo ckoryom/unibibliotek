@@ -1,16 +1,26 @@
 package com.project.unibibliotek;
 
-import android.app.Activity;
+import android.app.ActionBar;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends ActionBarActivity {
+	public final static String SEARCH_TO_RESULT_QUERY_MESSAGE = "com.project.unibibliotek.SEARCH_TO_RESULT_QUERY_MESSAGE";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
+		
+		ActionBar bar = getActionBar();
+        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#E1A22E")));
 
 	}
 
@@ -34,4 +44,13 @@ public class SearchActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	
+	public void initiateBookSearch(View view) 
+    {
+		Intent intent = new Intent(this, ResultsActivity.class);
+	    EditText editText = (EditText) findViewById(R.id.searchEditText);
+	    String message = editText.getText().toString();
+	    intent.putExtra(SEARCH_TO_RESULT_QUERY_MESSAGE, message);
+	    startActivity(intent);
+    }
 }

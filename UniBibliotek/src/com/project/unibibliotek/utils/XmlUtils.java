@@ -3,6 +3,7 @@ package com.project.unibibliotek.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,10 @@ import org.xmlpull.v1.XmlPullParserException;
 import com.project.unibibliotek.model.Author;
 import com.project.unibibliotek.model.Availability;
 import com.project.unibibliotek.model.Book;
+import com.project.unibibliotek.model.Location;
+import com.project.unibibliotek.model.ResourceType;
+import com.project.unibibliotek.model.WebServiceParameters;
+
 import android.util.Xml;
 
 public class XmlUtils {
@@ -46,12 +51,60 @@ public class XmlUtils {
         }
     }
 	
+	public WebServiceParameters getWebServiceParameters() throws XmlPullParserException, IOException {
+		InputStream in = null;
+		WebServiceParameters parameters = null;
+		try {
+			
+			in = getClass().getClassLoader().getResourceAsStream("webservice.xml");
+			if (in != null) {
+				XmlPullParser parser = Xml.newPullParser();
+				parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+	            parser.setInput(in, null);
+	            
+	            int eventType = parser.getEventType();
+	            while (eventType != XmlPullParser.END_DOCUMENT) {
+	            	String name = null;
+	            	switch (eventType) {
+						case XmlPullParser.START_TAG:
+							name = parser.getName();
+							if (name.equals("webservice")) {
+								parameters = new WebServiceParameters();
+							}
+							else if (name.equals("wsdl")) {
+								URL url = new URL(parser.nextText());
+								parameters.setUrl(url);
+							}
+							else if (name.equals("scope")) {
+								parameters.setScope(parser.nextText());
+							}
+							break;
+						case XmlPullParser.END_TAG:
+							name = parser.getName();
+							if (name.equalsIgnoreCase("webservice")) {
+								return parameters;
+							}
+						default:
+							break;
+					}
+	            	eventType = parser.next();
+	            }
+	            return parameters;
+			}
+			return parameters;
+		} finally {
+            in.close();
+        }
+	}
+	
 	private List<Book> parseXML (XmlPullParser parser) throws XmlPullParserException, IOException {
 		List<Book> books = null;
 		int eventType = parser.getEventType();
 		Book currentBook = null;
 		Author author = null;
 		List<String> isbn = null;
+		List<Location> locations = null;
+		Location currentLocation = null;
 		
 		Boolean facets = false;
 		Boolean addata = false;
@@ -68,6 +121,22 @@ public class XmlUtils {
 						currentBook = new Book();
 						author = new Author();
 						isbn = new ArrayList<String>();
+						locations = null;
+					}
+					else if (name.equals("sear:LIBRARIES")) {
+						locations = new ArrayList<Location>();
+					}
+					else if (locations != null) {
+						if (name.equals("sear:collection")) {
+							currentLocation = new Location();
+							currentLocation.setSite(parser.nextText());
+						}
+						else if (name.equals("sear:callNumber")) {
+							currentLocation.setSection(parser.nextText());
+							locations.add(currentLocation);
+							currentLocation = null;
+						}
+							
 					}
 					else if (currentBook != null) {
 						if (name.equals("facets")) {
@@ -89,6 +158,14 @@ public class XmlUtils {
 								else if (value.equals("online_resources"))
 									currentBook.setAvailability(Availability.online_resources);
 							}
+							else if (name.equals("rsrctype")) {
+								String value = parser.nextText();
+								if (value.equals("book"))
+									currentBook.setResourceType(ResourceType.book);
+								else if (value.equals("ebook"))
+									currentBook.setResourceType(ResourceType.ebook);
+							}
+							
 						}
 						else if (addata) {
 							if (name.equals("aulast")) {
@@ -127,6 +204,15 @@ public class XmlUtils {
 						currentBook.setAuthor(author);
 						currentBook.setIsbn(isbn);
 						books.add(currentBook);
+					}
+					else if (name.equalsIgnoreCase("sear:LIBRARIES") && locations != null) {
+						if (books != null && books.size()>0) {
+							int index = books.size()-1;
+							Book previousBook = books.get(index);
+							previousBook.setLocations(locations);
+							books.set(index, previousBook);
+							locations = null;
+						}
 					}
 				default:
 					break;

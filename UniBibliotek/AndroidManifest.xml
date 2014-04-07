@@ -32,6 +32,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.project.unibibliotek.MainActivity" />
         </activity>
+        <activity
+            android:name="com.project.unibibliotek.ResultsActivity"
+            android:label="@string/title_activity_results" >
+        </activity>
     </application>
 
 </manifest>
