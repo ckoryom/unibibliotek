@@ -25,6 +25,16 @@ public class Book {
 	
 	private List<Location> locations; 
 
+	private BookImage images;
+	
+	public BookImage getImages() {
+		return images;
+	}
+
+	public void setImages(BookImage images) {
+		this.images = images;
+	}
+
 	public List<Location> getLocations() {
 		return locations;
 	}

@@ -15,6 +15,7 @@ import org.xml.sax.InputSource;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.project.unibibliotek.logic.GoogleBooksRestful;
 import com.project.unibibliotek.model.Author;
 import com.project.unibibliotek.model.Availability;
 import com.project.unibibliotek.model.Book;
@@ -108,6 +109,8 @@ public class XmlUtils {
 		
 		Boolean facets = false;
 		Boolean addata = false;
+		
+		GoogleBooksRestful restful = new GoogleBooksRestful();
 		
 		while (eventType != XmlPullParser.END_DOCUMENT) {
 			String name = null;
@@ -203,6 +206,7 @@ public class XmlUtils {
 					if (name.equalsIgnoreCase("record") && currentBook != null) {
 						currentBook.setAuthor(author);
 						currentBook.setIsbn(isbn);
+						currentBook = restful.extractInfo(currentBook);
 						books.add(currentBook);
 					}
 					else if (name.equalsIgnoreCase("sear:LIBRARIES") && locations != null) {
