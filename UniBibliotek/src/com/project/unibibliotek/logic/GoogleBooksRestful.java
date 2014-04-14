@@ -42,6 +42,7 @@ public class GoogleBooksRestful {
 							BookImage bookImage = new BookImage();
 							bookImage.setSmallImage(smallImage);
 							bookImage.setLargeImage(largeImage);
+							book.setImages(bookImage);
 							flag = true;
 							break;
 							
