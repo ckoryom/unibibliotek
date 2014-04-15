@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,24 +41,29 @@ public class ResultsActivity extends Activity {
         librarian = new WebService();
         librarian.connect();
         booksList = librarian.search(bookTitleToSearch);
-        String[] booksArray = new String[booksList.size()];
-        for (int i=0; i<booksList.size(); i++)
-        {
-        	Book book = booksList.get(i);
-        	if (book.getTitle() == null)
-        		book.setTitle("no title");
-        	booksArray[i] = book.getTitle();
-        }
-        if (booksList.size() == 0)
-        {
-        	booksArray = new String[1];
-        	booksArray[0] = "No results found.";
-        }
+//        String[] booksArray = new String[booksList.size()];
+//        for (int i=0; i<booksList.size(); i++)
+//        {
+//        	Book book = booksList.get(i);
+//        	Log.d("Author name:", book.getAuthor().getName());				//output
+//        	Log.d("Author last name:", book.getAuthor().getLastName());		//output
+//        	Log.d("Year:", book.getYear());									//output
+//        	Log.d("Availability:", book.getAvailability().toString());					//output
+//        	if (book.getTitle() == null)
+//        		book.setTitle("no title");
+//        	booksArray[i] = book.getTitle();
+//        }
+//        if (booksList.size() == 0)
+//        {
+//        	booksArray = new String[1];
+//        	booksArray[0] = "No results found.";
+//        }
         //booksList.toArray(booksArray);
         
         ListView resultLV = (ListView) findViewById(R.id.resultListView);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, booksArray);
-        resultLV.setAdapter(arrayAdapter);
+        resultLV.setAdapter(new ResultsListAdapter(this, booksList));
+        //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, booksArray);
+        //resultLV.setAdapter(arrayAdapter);
         
         resultLV.setOnItemClickListener(new OnItemClickListener() 
         {
