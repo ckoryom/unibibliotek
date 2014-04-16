@@ -11,7 +11,6 @@ import java.net.URL;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.util.Log;
 
 import com.project.unibibliotek.model.ThreadStatus;
