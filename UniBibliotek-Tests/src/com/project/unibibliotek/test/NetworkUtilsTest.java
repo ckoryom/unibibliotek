@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.graphics.Bitmap;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
@@ -39,6 +40,12 @@ public class NetworkUtilsTest extends AndroidTestCase {
 		} catch (JSONException e) {
 			Log.e("JsonTest", "Failed to load JSON");
 		}
+	}
+	
+	public void testConvertBitmap() {
+		String url = "http://bks1.books.google.ie/books?id=4vRE_Q41ZHEC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api";
+		Bitmap bitmap = networkUtils.getBitmapFromUrl(url);
+		assertNotNull(bitmap);
 	}
 	
 }

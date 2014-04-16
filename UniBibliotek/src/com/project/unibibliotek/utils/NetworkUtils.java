@@ -11,6 +11,9 @@ import java.net.URL;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.project.unibibliotek.model.ThreadStatus;
@@ -20,6 +23,8 @@ public class NetworkUtils {
 	private ThreadStatus threadStatus;
 	
 	private HttpURLConnection conn;
+	
+	private Bitmap bitmap;
 	
 	public InputStream downloadUrl(final String urlString) throws IOException {
 		conn = null;
@@ -86,4 +91,36 @@ public class NetworkUtils {
 		
 	}
 	
+	public Bitmap getBitmapFromUrl (final String stringUrl) {
+		bitmap = null;
+		Thread thread = new Thread (new Runnable() {
+			@Override
+			public void run() {
+				try {
+					URL url = new URL(stringUrl);
+					HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+					conn.setDoInput(true);
+					conn.connect();
+					InputStream stream = conn.getInputStream();
+					bitmap = BitmapFactory.decodeStream(stream);
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+					Log.e("BitmapConversion", "Error converting bitmap from url.");
+					bitmap = null;
+				}
+				threadStatus = ThreadStatus.FINISHED;
+		        Thread.currentThread().interrupt();
+				
+			}
+		});
+		thread.start();
+		while (threadStatus != ThreadStatus.FINISHED) {
+			if (threadStatus == ThreadStatus.FINISHED)
+				return bitmap;
+		}
+		return bitmap;
+		
+		
+	}
 }

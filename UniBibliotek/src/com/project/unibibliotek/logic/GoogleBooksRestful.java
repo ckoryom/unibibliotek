@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.project.unibibliotek.model.Book;
 import com.project.unibibliotek.model.BookImage;
+import com.project.unibibliotek.model.Rating;
 import com.project.unibibliotek.utils.NetworkUtils;
 
 public class GoogleBooksRestful {
@@ -43,6 +44,11 @@ public class GoogleBooksRestful {
 							bookImage.setSmallImage(smallImage);
 							bookImage.setLargeImage(largeImage);
 							book.setImages(bookImage);
+							book.setNumberPages(volume.getInt("pageCount"));
+							Rating rating = new Rating();
+							rating.setTotalRatings(volume.getInt("ratingsCount"));
+							rating.setAverageRating(volume.getInt("averageRating"));
+							book.setRating(rating);
 							flag = true;
 							break;
 							

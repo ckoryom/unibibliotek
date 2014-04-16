@@ -3,10 +3,12 @@ package com.project.unibibliotek.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Bitmap;
 import android.test.AndroidTestCase;
 
 import com.project.unibibliotek.logic.GoogleBooksRestful;
 import com.project.unibibliotek.model.Book;
+import com.project.unibibliotek.utils.NetworkUtils;
 
 
 public class GoogleRestfulTest extends AndroidTestCase {
@@ -38,8 +40,15 @@ public class GoogleRestfulTest extends AndroidTestCase {
 		book.setIsbn(isbns);
 		book = restful.extractInfo(book);
 		assertNotNull(book);
-		assertTrue(book.getImages().getSmallImage().equals("http://bks7.books.google.ie/books?id=n8JyngEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api"));
-		assertTrue(book.getImages().getLargeImage().equals("http://bks7.books.google.ie/books?id=n8JyngEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"));
+		NetworkUtils networkUtils = new NetworkUtils();
+		Bitmap testSmallBitmap = networkUtils.getBitmapFromUrl("http://bks7.books.google.ie/books?id=n8JyngEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api");
+		Bitmap testLargeBitmap = networkUtils.getBitmapFromUrl("http://bks7.books.google.ie/books?id=n8JyngEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api");
+		Bitmap smallBitmap = networkUtils.getBitmapFromUrl(book.getImages().getSmallImage());
+		Bitmap largeBitmap = networkUtils.getBitmapFromUrl(book.getImages().getLargeImage());
+		assertTrue(testSmallBitmap.getHeight() == smallBitmap.getHeight());
+		assertTrue(testLargeBitmap.getHeight() == largeBitmap.getHeight());
+		assertNotNull(book.getRating().getAverageRating());
+		assertNotNull(book.getRating().getTotalRatings());
 	}
 	
 }

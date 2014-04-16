@@ -27,6 +27,28 @@ public class Book {
 
 	private BookImage images;
 	
+	private int numberPages;
+	
+	private Rating rating;
+	
+	
+	
+	public Rating getRating() {
+		return rating;
+	}
+
+	public void setRating(Rating rating) {
+		this.rating = rating;
+	}
+
+	public int getNumberPages() {
+		return numberPages;
+	}
+
+	public void setNumberPages(int numberPages) {
+		this.numberPages = numberPages;
+	}
+
 	public BookImage getImages() {
 		return images;
 	}
