@@ -3,24 +3,25 @@ package com.project.unibibliotek;
 import java.util.List;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.project.unibibliotek.logic.WebService;
 import com.project.unibibliotek.model.Book;
+import com.project.unibibliotek.ObjectsSharer;
 
-public class ResultsActivity extends Activity {
+public class ResultsActivity extends ActionBarActivity 
+{
+	public final static String RESULT_TO_DETAILED_QUERY_MESSAGE = "com.project.unibibliotek.RESULT_TO_DETAILED_QUERY_MESSAGE";
 	
 	public List<Book> booksList;
 	public WebService librarian;
@@ -37,33 +38,25 @@ public class ResultsActivity extends Activity {
         Intent intent = getIntent();
         String bookTitleToSearch = intent.getStringExtra(SearchActivity.SEARCH_TO_RESULT_QUERY_MESSAGE);
         
-        //TODO: request results and display them in a list
+        //Request results and display them in a list
         librarian = new WebService();
         librarian.connect();
         booksList = librarian.search(bookTitleToSearch);
-//        String[] booksArray = new String[booksList.size()];
-//        for (int i=0; i<booksList.size(); i++)
-//        {
-//        	Book book = booksList.get(i);
-//        	Log.d("Author name:", book.getAuthor().getName());				//output
-//        	Log.d("Author last name:", book.getAuthor().getLastName());		//output
-//        	Log.d("Year:", book.getYear());									//output
-//        	Log.d("Availability:", book.getAvailability().toString());					//output
-//        	if (book.getTitle() == null)
-//        		book.setTitle("no title");
-//        	booksArray[i] = book.getTitle();
-//        }
-//        if (booksList.size() == 0)
-//        {
-//        	booksArray = new String[1];
-//        	booksArray[0] = "No results found.";
-//        }
-        //booksList.toArray(booksArray);
+        //Check if list is empty. Not tested yet.
+        for (Book book: booksList)
+        {
+        	if (book.getTitle() == null)
+        		book.setTitle("No title.");
+        }
+        if (booksList.size() == 0)
+        {
+        	Book book = new Book();
+        	book.setTitle("No results found");
+        	booksList.add(book);
+        }
         
         ListView resultLV = (ListView) findViewById(R.id.resultListView);
         resultLV.setAdapter(new ResultsListAdapter(this, booksList));
-        //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, booksArray);
-        //resultLV.setAdapter(arrayAdapter);
         
         resultLV.setOnItemClickListener(new OnItemClickListener() 
         {
@@ -71,12 +64,19 @@ public class ResultsActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id)
 			{
-				// TODO Auto-generated method stub
-				
+				pushDetailedScreen(position);
 			}
         });
 	}
 
+	private void pushDetailedScreen(int pos)
+	{
+		Intent intent = new Intent(this, DetailedActivity.class);
+		Book book = booksList.get(pos);
+		ObjectsSharer.setBook(book);
+        startActivity(intent);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -94,10 +94,6 @@ public class ResultsActivity extends Activity {
 	    switch (item.getItemId()) 
 	    {
 	        case android.R.id.home:
-	            // app icon in action bar clicked; go home
-//	            Intent intent = new Intent(this, HomeActivity.class);
-//	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//	            startActivity(intent);
 	        	this.finish();
 	            return true;
 	        case R.id.action_settings:

@@ -12,5 +12,11 @@
     <string name="hint_edit_text_activity_search">book name</string>
     <string name="title_search_button_activity_search">Search</string>
     <string name="title_activity_results">ResultsActivity</string>
+    <string name="title_activity_detailed">DetailedActivity</string>
+    
+    <string name="detailed_activity_title">Title</string>
+    <string name="detailed_activity_description">Description</string>
+    <string name="detailed_activity_author">Author</string>
+    <string name="image_content_description">image</string>
 
 </resources>
