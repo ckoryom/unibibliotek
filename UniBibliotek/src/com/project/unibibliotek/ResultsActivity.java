@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,10 +72,16 @@ public class ResultsActivity extends ActionBarActivity
 
 	private void pushDetailedScreen(int pos)
 	{
-		Intent intent = new Intent(this, DetailedActivity.class);
-		Book book = booksList.get(pos);
-		ObjectsSharer.setBook(book);
-        startActivity(intent);
+		try {
+			Intent intent = new Intent(this, com.project.unibibliotek.DetailedActivity.class);
+			Book book = booksList.get(pos);
+			ObjectsSharer.setBook(book);
+	        startActivity(intent);
+		}
+		catch (Exception e) {
+			Log.e("DetailedActivity", e.getMessage());
+		}
+		
 	}
 	
 	@Override
