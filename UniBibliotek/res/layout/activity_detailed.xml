@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.project.unibibliotek.DetailedActivity"
+    tools:ignore="MergeRootFrame" >
+
+    <TextView
+        android:id="@+id/DescriptionTitleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:gravity="center_horizontal"
+        android:paddingTop="30dp"
+        android:text="@string/detailed_activity_title"
+        android:textSize="22sp" />
+
+    <ImageView
+        android:id="@+id/DescriptionBookImageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3"
+        android:contentDescription="@string/image_content_description"
+        android:scaleType="fitCenter"
+        android:src="@drawable/empty_book_cover" />
+
+    <TextView
+        android:id="@+id/DescriptionDescriptionTextView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/detailed_activity_description" />
+
+    <TextView
+        android:id="@+id/DescriptionAuthorTextView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/detailed_activity_author" />
+
+</LinearLayout>
+

@@ -115,6 +115,7 @@ public class NetworkUtils {
 			}
 		});
 		thread.start();
+		threadStatus = ThreadStatus.WORKING;
 		while (threadStatus != ThreadStatus.FINISHED) {
 			if (threadStatus == ThreadStatus.FINISHED)
 				return bitmap;
