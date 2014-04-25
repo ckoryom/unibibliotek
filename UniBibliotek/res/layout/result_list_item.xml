@@ -1,13 +1,31 @@
  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
-
+		
+     <LinearLayout android:id="@+id/thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="3dip"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dip">
+ 
+        <ImageView
+            android:id="@+id/resultsBookImageView"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:contentDescription="@string/image_content_description"
+            android:src="@drawable/empty_book_cover"/>
+ 
+    </LinearLayout>
+     
         <TextView
             android:id="@+id/bookNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="23dp"
+            android:layout_marginLeft="50dp"
             android:layout_marginTop="5dp"
+            android:layout_alignTop="@+id/thumbnail"
+            android:layout_alignLeft="@+id/thumbnail"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:textSize="16sp" />
