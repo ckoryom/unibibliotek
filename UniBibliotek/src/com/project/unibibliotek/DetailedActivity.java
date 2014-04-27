@@ -11,8 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.project.unibibliotek.logic.GoogleBooksRestful;
 import com.project.unibibliotek.model.Book;
 import com.project.unibibliotek.utils.NetworkUtils;
 
@@ -30,8 +28,6 @@ public class DetailedActivity extends Activity
         bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#E1A22E")));
 		
 		Book book = ObjectsSharer.getBook();
-		GoogleBooksRestful gbr = new GoogleBooksRestful();
-		book = gbr.extractInfo(book);
 		TextView titleTV = (TextView) findViewById(R.id.DescriptionTitleTextView);
 		titleTV.setText(book.getTitle());
 		ImageView coverIV = (ImageView) findViewById(R.id.DescriptionBookImageView);

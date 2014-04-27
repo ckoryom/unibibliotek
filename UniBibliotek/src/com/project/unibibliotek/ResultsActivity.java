@@ -6,6 +6,7 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.project.unibibliotek.logic.WebService;
 import com.project.unibibliotek.model.Book;
@@ -24,26 +26,36 @@ public class ResultsActivity extends ActionBarActivity
 {
 	public final static String RESULT_TO_DETAILED_QUERY_MESSAGE = "com.project.unibibliotek.RESULT_TO_DETAILED_QUERY_MESSAGE";
 	
-	public List<Book> booksList;
-	public WebService librarian;
+	private List<Book> booksList;
+	private WebService librarian;
+	private ProgressBar progressBar;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_results);
+	private class SearchBookTask extends AsyncTask<String, Void, List<Book>> {
 
-		ActionBar bar = getActionBar();
-		bar.setDisplayHomeAsUpEnabled(true);
-        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#E1A22E")));
-        
-        Intent intent = getIntent();
-        String bookTitleToSearch = intent.getStringExtra(SearchActivity.SEARCH_TO_RESULT_QUERY_MESSAGE);
-        
-        //Request results and display them in a list
-        librarian = new WebService();
-        librarian.connect();
-        booksList = librarian.search(bookTitleToSearch);
-        //Check if list is empty. Not tested yet.
+		@Override
+		protected List<Book> doInBackground(String... params) {
+			librarian = new WebService();
+	        librarian.connect();
+	        return librarian.search(params[0]);
+			
+		}
+		
+		@Override
+		protected void onPreExecute () {
+			progressBar.setVisibility(View.VISIBLE);
+		}
+		
+		@Override
+		protected void onPostExecute(List<Book> books) {
+			booksList = books;
+			paintBookList();
+			progressBar.setVisibility(View.INVISIBLE);
+		}
+		
+	}
+	
+	private void paintBookList () {
+		//Check if list is empty. Not tested yet.
         for (Book book: booksList)
         {
         	if (book.getTitle() == null)
@@ -68,6 +80,24 @@ public class ResultsActivity extends ActionBarActivity
 				pushDetailedScreen(position);
 			}
         });
+	}
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_results);
+		
+		progressBar = (ProgressBar) findViewById(R.id.progressBar);
+		ActionBar bar = getActionBar();
+		bar.setDisplayHomeAsUpEnabled(true);
+        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#E1A22E")));
+        
+        Intent intent = getIntent();
+        String bookTitleToSearch = intent.getStringExtra(SearchActivity.SEARCH_TO_RESULT_QUERY_MESSAGE);
+      //Request results and display them in a list
+        new SearchBookTask().execute(bookTitleToSearch);
+        
+        
 	}
 
 	private void pushDetailedScreen(int pos)
