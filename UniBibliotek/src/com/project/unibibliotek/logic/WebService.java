@@ -11,6 +11,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 
 import com.project.unibibliotek.model.Book;
+import com.project.unibibliotek.model.SearchFilter;
 import com.project.unibibliotek.model.WebServiceParameters;
 import com.project.unibibliotek.utils.NetworkUtils;
 import com.project.unibibliotek.utils.XmlUtils;
@@ -21,6 +22,7 @@ import android.util.Log;
 import primo4j.PrimoX;
 
 import primo4j.data.Query;
+import primo4j.data.QueryCriteria;
 
 
 public class WebService {
@@ -91,15 +93,25 @@ public class WebService {
 		}
 	}
 	
-	public List<Book> search(final String title) {
+	public List<Book> search(List<SearchFilter> searchFilters) {
 		if(primoService != null) {
 			books = null;
-			Query query = new Query(parameters.getScope(), title);
+			Query query = null;
+			int filterCount = 0;
+			for (SearchFilter filter: searchFilters) {
+				if (filterCount == 0) {
+					query = new Query(parameters.getScope(), filter.getFilterValue(), "contains", filter.getQuery());
+				}
+				else {
+					query.addCriteria(new QueryCriteria(filter.getFilterValue(), "contains", filter.getQuery()));
+				}
+				filterCount++;
+			}
 			try {
 				XmlUtils xmlUtils = new XmlUtils();
 				NetworkUtils networkUtils = new NetworkUtils();
-
-				InputStream stream = networkUtils.downloadUrl(getFullUrl() + query.getXservicePath());
+				String xServicePath = query.getXservicePath();
+				InputStream stream = networkUtils.downloadUrl(getFullUrl() + xServicePath);
 				
 				books = new ArrayList<Book>();
 				books = xmlUtils.parse(stream);

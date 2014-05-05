@@ -1,5 +1,6 @@
 package com.project.unibibliotek;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ActionBar;
@@ -20,6 +21,8 @@ import android.widget.ProgressBar;
 
 import com.project.unibibliotek.logic.WebService;
 import com.project.unibibliotek.model.Book;
+import com.project.unibibliotek.model.Filter;
+import com.project.unibibliotek.model.SearchFilter;
 import com.project.unibibliotek.ObjectsSharer;
 
 public class ResultsActivity extends ActionBarActivity 
@@ -29,14 +32,21 @@ public class ResultsActivity extends ActionBarActivity
 	private List<Book> booksList;
 	private WebService librarian;
 	private ProgressBar progressBar;
-
+	private List<SearchFilter> searchFilter;
+	
 	private class SearchBookTask extends AsyncTask<String, Void, List<Book>> {
-
+		
+		public SearchBookTask () {
+			searchFilter = new ArrayList<SearchFilter>();
+		}
+		
 		@Override
 		protected List<Book> doInBackground(String... params) {
 			librarian = new WebService();
 	        librarian.connect();
-	        return librarian.search(params[0]);
+	        SearchFilter titleFilter = new SearchFilter(Filter.TITLE, params[0]);
+	        searchFilter.add(titleFilter);
+	        return librarian.search(searchFilter);
 			
 		}
 		
