@@ -12,49 +12,37 @@ import java.net.URL;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.project.unibibliotek.model.ThreadStatus;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.project.unibibliotek.model.ThreadStatus;
 
 public class NetworkUtils {
-	
-	private ThreadStatus threadStatus;
 	
 	private HttpURLConnection conn;
 	
 	private Bitmap bitmap;
 	
+	private ThreadStatus threadStatus;
+	
 	public InputStream downloadUrl(final String urlString) throws IOException {
 		conn = null;
-		threadStatus = ThreadStatus.NONE;
-		Thread thread = new Thread(new Runnable(){
-		    @Override
-		    public void run() {
-		        threadStatus = ThreadStatus.WORKING;
-		        URL url = null;
-				try {
-					url = new URL(urlString);
-					conn = (HttpURLConnection) url.openConnection();
-					conn.setReadTimeout(10000 /* milliseconds */);
-				    conn.setConnectTimeout(15000 /* milliseconds */);
-				    conn.setRequestMethod("GET");
-				    conn.setDoInput(true);
-				    conn.connect();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-		        threadStatus = ThreadStatus.FINISHED;
-		        Thread.currentThread().interrupt();
-		    }
-		} );
-		thread.start();
-		while (threadStatus != ThreadStatus.FINISHED) {
-			if (threadStatus == ThreadStatus.FINISHED)
-				return conn.getInputStream();
+		URL url = null;
+		try {
+			url = new URL(urlString);
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setReadTimeout(10000 /* milliseconds */);
+		    conn.setConnectTimeout(15000 /* milliseconds */);
+		    conn.setRequestMethod("GET");
+		    conn.setDoInput(true);
+		    conn.connect();
+		    return conn.getInputStream();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
-	    return conn.getInputStream();
 	}
 
 	private String jsonStringBuilder (Reader reader) throws IOException {
@@ -111,17 +99,17 @@ public class NetworkUtils {
 				}
 				threadStatus = ThreadStatus.FINISHED;
 		        Thread.currentThread().interrupt();
-				
+
 			}
 		});
-		thread.start();
 		threadStatus = ThreadStatus.WORKING;
+		thread.start();
 		while (threadStatus != ThreadStatus.FINISHED) {
 			if (threadStatus == ThreadStatus.FINISHED)
 				return bitmap;
 		}
 		return bitmap;
-		
-		
+
+
 	}
 }

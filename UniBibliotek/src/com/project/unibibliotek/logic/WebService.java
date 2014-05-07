@@ -11,7 +11,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 
 import com.project.unibibliotek.model.Book;
-import com.project.unibibliotek.model.ThreadStatus;
+import com.project.unibibliotek.model.SearchFilter;
 import com.project.unibibliotek.model.WebServiceParameters;
 import com.project.unibibliotek.utils.NetworkUtils;
 import com.project.unibibliotek.utils.XmlUtils;
@@ -22,6 +22,7 @@ import android.util.Log;
 import primo4j.PrimoX;
 
 import primo4j.data.Query;
+import primo4j.data.QueryCriteria;
 
 
 public class WebService {
@@ -31,8 +32,6 @@ public class WebService {
 	private PrimoX primoService;
 	
 	private WebServiceParameters parameters;
-	
-	private ThreadStatus threadStatus;
 	
 	private List<Book> books;
 	
@@ -53,38 +52,24 @@ public class WebService {
 	
 	public Boolean checkUrl() {
 		final List<Boolean> results = new ArrayList<Boolean>();
-		Thread thread = new Thread(new Runnable(){
-		    @Override
-		    public void run() {
-		        try {
-		        	threadStatus = ThreadStatus.WORKING;
-		        	HttpURLConnection huc;
-		    		int responseCode;
-		    		try {
-		    			huc = (HttpURLConnection) parameters.getUrl().openConnection();
-		    			responseCode = huc.getResponseCode();
-		    			if (responseCode != 404) {
-		    				results.add(true);
-		    			} else {
-		    				results.add(false);
-		    			}
-		    		} catch (IOException e) {
-		    			e.printStackTrace();
-		    			results.add(false);
-		    		}
-		        } catch (Exception e) {
-		            e.printStackTrace();
-		        }
-		        threadStatus = ThreadStatus.FINISHED;
-		        Thread.currentThread().interrupt();
-		    }
-		} );
-		threadStatus = ThreadStatus.NONE;
-		thread.start(); 
-		while (threadStatus != ThreadStatus.FINISHED) {
-			if (results.size()>0)
-				return results.get(0);
-		}
+		try {
+	        	HttpURLConnection huc;
+	    		int responseCode;
+	    		try {
+	    			huc = (HttpURLConnection) parameters.getUrl().openConnection();
+	    			responseCode = huc.getResponseCode();
+	    			if (responseCode != 404) {
+	    				results.add(true);
+	    			} else {
+	    				results.add(false);
+	    			}
+	    		} catch (IOException e) {
+	    			e.printStackTrace();
+	    			results.add(false);
+	    		}
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
 		return results.get(0);
 	}
 	
@@ -108,40 +93,32 @@ public class WebService {
 		}
 	}
 	
-	public List<Book> search(final String title) {
+	public List<Book> search(List<SearchFilter> searchFilters) {
 		if(primoService != null) {
-			threadStatus = ThreadStatus.NONE;
 			books = null;
-			Thread thread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					threadStatus = ThreadStatus.WORKING;
-					Query query = new Query(parameters.getScope(), title);
-
-					try {
-						XmlUtils xmlUtils = new XmlUtils();
-						NetworkUtils networkUtils = new NetworkUtils();
-
-						InputStream stream = networkUtils.downloadUrl(getFullUrl() + query.getXservicePath());
-						
-						books = new ArrayList<Book>();
-						books = xmlUtils.parse(stream);
-						
-					}
-					catch (Exception e){
-						Log.e(TAG,"Problem while searching primo: " + e.getMessage());
-					}
-					threadStatus = ThreadStatus.FINISHED;
-					Thread.currentThread().interrupt();
-					
-					
-					
+			Query query = null;
+			int filterCount = 0;
+			for (SearchFilter filter: searchFilters) {
+				if (filterCount == 0) {
+					query = new Query(parameters.getScope(), filter.getFilterValue(), "contains", filter.getQuery());
 				}
-			});
-			thread.start();
-			while (threadStatus != ThreadStatus.FINISHED) {
-				if (threadStatus == ThreadStatus.FINISHED)
-					return books;
+				else {
+					query.addCriteria(new QueryCriteria(filter.getFilterValue(), "contains", filter.getQuery()));
+				}
+				filterCount++;
+			}
+			try {
+				XmlUtils xmlUtils = new XmlUtils();
+				NetworkUtils networkUtils = new NetworkUtils();
+				String xServicePath = query.getXservicePath();
+				InputStream stream = networkUtils.downloadUrl(getFullUrl() + xServicePath);
+				
+				books = new ArrayList<Book>();
+				books = xmlUtils.parse(stream);
+				
+			}
+			catch (Exception e){
+				Log.e(TAG,"Problem while searching primo: " + e.getMessage());
 			}
 			return books;
 			
