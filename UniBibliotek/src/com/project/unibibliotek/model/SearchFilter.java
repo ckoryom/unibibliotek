@@ -1,9 +1,16 @@
 package com.project.unibibliotek.model;
 
+import java.io.Serializable;
+
 import primo4j.data.QueryCriteria;
 
-public class SearchFilter {
+public class SearchFilter implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Filter filter;
 	
 	private String query;

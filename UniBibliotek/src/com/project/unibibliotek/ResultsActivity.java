@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 
 import com.project.unibibliotek.logic.WebService;
 import com.project.unibibliotek.model.Book;
-import com.project.unibibliotek.model.Filter;
 import com.project.unibibliotek.model.SearchFilter;
 import com.project.unibibliotek.ObjectsSharer;
 
@@ -32,21 +31,14 @@ public class ResultsActivity extends ActionBarActivity
 	private List<Book> booksList;
 	private WebService librarian;
 	private ProgressBar progressBar;
-	private List<SearchFilter> searchFilter;
 	
-	private class SearchBookTask extends AsyncTask<String, Void, List<Book>> {
-		
-		public SearchBookTask () {
-			searchFilter = new ArrayList<SearchFilter>();
-		}
+	private class SearchBookTask extends AsyncTask<ArrayList<SearchFilter>, Void, List<Book>> {
 		
 		@Override
-		protected List<Book> doInBackground(String... params) {
+		protected List<Book> doInBackground(ArrayList<SearchFilter>... params) {
 			librarian = new WebService();
 	        librarian.connect();
-	        SearchFilter titleFilter = new SearchFilter(Filter.TITLE, params[0]);
-	        searchFilter.add(titleFilter);
-	        return librarian.search(searchFilter);
+	        return librarian.search(params[0]);
 			
 		}
 		
@@ -92,6 +84,7 @@ public class ResultsActivity extends ActionBarActivity
         });
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -103,11 +96,13 @@ public class ResultsActivity extends ActionBarActivity
         bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#E1A22E")));
         
         Intent intent = getIntent();
-        String bookTitleToSearch = intent.getStringExtra(SearchActivity.SEARCH_TO_RESULT_QUERY_MESSAGE);
-      //Request results and display them in a list
-        new SearchBookTask().execute(bookTitleToSearch);
-        
-        
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+        	ArrayList<SearchFilter> filters = (ArrayList<SearchFilter>)extras.getSerializable(SearchActivity.SEARCH_TO_RESULT_QUERY_MESSAGE);
+            new SearchBookTask().execute(filters);
+        }
+       
+             
 	}
 
 	private void pushDetailedScreen(int pos)

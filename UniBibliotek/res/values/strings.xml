@@ -7,9 +7,16 @@
     <string name="intro_screen_logo1_description">Univercity Logo</string>
     <string name="intro_screen_logo2_description">Library Logo</string>
     <string name="intro_screen_button_title">Find a Book</string>
+    
+    <string name="label_activity_search_type">Select the type of your search:</string>
+    <string name="title_search_button_all">All</string>
+    <string name="title_search_button_isbn">ISBN</string>
+    <string name="title_search_button_detailed">Detailed </string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="label_activity_search">Enter your search query here:</string>
-    <string name="hint_edit_text_activity_search">book name</string>
+    <string name="hint_edit_text_activity_search1">title</string>
+    <string name="hint_edit_text_activity_search2">author</string>
+    <string name="hint_edit_text_activity_search3">subject</string>
     <string name="title_search_button_activity_search">Search</string>
     <string name="title_activity_results">ResultsActivity</string>
     <string name="title_activity_detailed">DetailedActivity</string>

@@ -12,33 +12,84 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:paddingTop="10dp"
+        android:text="@string/label_activity_search_type"
+        android:textColor="#666666"
+        android:textSize="20sp" />
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:orientation="horizontal" >
+	        <Button
+	        android:id="@+id/buttonAll"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:layout_weight="0.33"
+	        android:text="@string/title_search_button_all" 
+	        android:onClick="setSearchAll" />
+	        <Button
+	        android:id="@+id/buttonIsbn"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:layout_weight="0.34"
+	        android:text="@string/title_search_button_isbn" 
+	        android:onClick="setSearchIsbn" />
+	        <Button
+	        android:id="@+id/buttonDetailed"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:layout_weight="0.33"
+	        android:text="@string/title_search_button_detailed" 
+	        android:onClick="setSearchDetailed" />
+    </LinearLayout>
+    
+    <TextView
+        android:id="@+id/labelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:paddingTop="30dp"
         android:text="@string/label_activity_search"
         android:textColor="#666666"
         android:textSize="20sp" />
 
     <EditText
-        android:id="@+id/searchEditText"
+        android:id="@+id/searchEditText1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/hint_edit_text_activity_search" >
-
+        android:hint="@string/hint_edit_text_activity_search1" >
+        <requestFocus />
+    </EditText>
+    <EditText
+        android:id="@+id/searchEditText2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/hint_edit_text_activity_search2"
+         >
+        <requestFocus />
+    </EditText>
+    <EditText
+        android:id="@+id/searchEditText3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/hint_edit_text_activity_search3"
+         >
         <requestFocus />
     </EditText>
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/searchButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/title_search_button_activity_search" 
         android:onClick="initiateBookSearch" />
-
-    <ListView
-        android:id="@+id/paramsListView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
 
 </LinearLayout>
