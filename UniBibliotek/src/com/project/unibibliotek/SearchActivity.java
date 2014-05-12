@@ -1,6 +1,5 @@
 package com.project.unibibliotek;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import com.project.unibibliotek.model.Filter;
@@ -20,6 +19,9 @@ import android.widget.EditText;
 
 public class SearchActivity extends ActionBarActivity 
 {
+	
+	public final static String SEARCH_TO_RESULT_QUERY_MESSAGE = "com.project.unibibliotek.SEARCH_TO_RESULT_QUERY_MESSAGE";
+	
 	private enum SearchType 
 	{
 	    ALL, ISBN, DETAILED 
@@ -127,7 +129,7 @@ public class SearchActivity extends ActionBarActivity
 	    		searchFilters.add(subjectFilter);
 	    	}		
 	    }
-	     
+	    intent.putExtra(SEARCH_TO_RESULT_QUERY_MESSAGE, searchFilters);
 	    startActivity(intent);
     }
 	
