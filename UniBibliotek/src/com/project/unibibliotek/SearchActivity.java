@@ -1,5 +1,11 @@
 package com.project.unibibliotek;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
+import com.project.unibibliotek.model.Filter;
+import com.project.unibibliotek.model.SearchFilter;
+
 import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,8 +17,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-public class SearchActivity extends ActionBarActivity {
-	public final static String SEARCH_TO_RESULT_QUERY_MESSAGE = "com.project.unibibliotek.SEARCH_TO_RESULT_QUERY_MESSAGE";
+
+public class SearchActivity extends ActionBarActivity 
+{
+	private enum SearchType 
+	{
+	    ALL, ISBN, DETAILED 
+	}
+	private SearchType searchType;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +33,7 @@ public class SearchActivity extends ActionBarActivity {
 		
 		ActionBar bar = getActionBar();
         bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#E1A22E")));
-
+        setSearchAll(null);
 	}
 
 	@Override
@@ -44,13 +56,79 @@ public class SearchActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	//Button actions
+	
+	public void setSearchAll(View view)
+	{
+		searchType = SearchType.ALL;
+		EditText editText1 = (EditText) findViewById(R.id.searchEditText1);
+		EditText editText2 = (EditText) findViewById(R.id.searchEditText2);
+		EditText editText3 = (EditText) findViewById(R.id.searchEditText3);
+		editText1.setHint("query");
+		editText2.setVisibility(View.GONE);
+		editText3.setVisibility(View.GONE);
+	}
+	
+	public void setSearchIsbn(View view)
+	{
+		searchType = SearchType.ISBN;
+		EditText editText1 = (EditText) findViewById(R.id.searchEditText1);
+		EditText editText2 = (EditText) findViewById(R.id.searchEditText2);
+		EditText editText3 = (EditText) findViewById(R.id.searchEditText3);
+		editText1.setHint("isbn");
+		editText2.setVisibility(View.GONE);
+		editText3.setVisibility(View.GONE);
+	}
+	
+	public void setSearchDetailed(View view)
+	{
+		searchType = SearchType.DETAILED;
+		EditText editText1 = (EditText) findViewById(R.id.searchEditText1);
+		EditText editText2 = (EditText) findViewById(R.id.searchEditText2);
+		EditText editText3 = (EditText) findViewById(R.id.searchEditText3);
+		editText1.setHint("title");
+		editText2.setVisibility(View.VISIBLE);
+		editText3.setVisibility(View.VISIBLE);
+	}
 	
 	public void initiateBookSearch(View view) 
     {
 		Intent intent = new Intent(this, ResultsActivity.class);
-	    EditText editText = (EditText) findViewById(R.id.searchEditText);
-	    String message = editText.getText().toString();
-	    intent.putExtra(SEARCH_TO_RESULT_QUERY_MESSAGE, message);
+	    EditText editText1 = (EditText) findViewById(R.id.searchEditText1);
+	    EditText editText2 = (EditText) findViewById(R.id.searchEditText2);
+	    EditText editText3 = (EditText) findViewById(R.id.searchEditText3);
+	    
+	    ArrayList<SearchFilter> searchFilters = new ArrayList<SearchFilter>();
+	    if (searchType == SearchType.ALL)
+	    {
+	    	SearchFilter subjectFilter = new SearchFilter(Filter.ANY, editText1.getText().toString());
+    		searchFilters.add(subjectFilter);
+	    }
+	    else if (searchType == SearchType.ISBN)
+	    {
+	    	SearchFilter subjectFilter = new SearchFilter(Filter.ISBN, editText1.getText().toString());
+    		searchFilters.add(subjectFilter);
+	    }
+	    else if (searchType == SearchType.DETAILED)
+	    {
+	    	if (editText1.getText().toString().length() > 0)
+	    	{
+	    		SearchFilter subjectFilter = new SearchFilter(Filter.TITLE, editText1.getText().toString());
+	    		searchFilters.add(subjectFilter);
+	    	}
+	    	if (editText2.getText().toString().length() > 0)
+	    	{
+	    		SearchFilter subjectFilter = new SearchFilter(Filter.AUTHOR, editText2.getText().toString());
+	    		searchFilters.add(subjectFilter);
+	    	}
+	    	if (editText3.getText().toString().length() > 0)
+	    	{
+	    		SearchFilter subjectFilter = new SearchFilter(Filter.SUBJECT, editText3.getText().toString());
+	    		searchFilters.add(subjectFilter);
+	    	}		
+	    }
+	     
 	    startActivity(intent);
     }
+	
 }

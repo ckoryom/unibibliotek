@@ -104,10 +104,11 @@ public class ResultsActivity extends ActionBarActivity
         
         Intent intent = getIntent();
         String bookTitleToSearch = intent.getStringExtra(SearchActivity.SEARCH_TO_RESULT_QUERY_MESSAGE);
-      //Request results and display them in a list
+        //Leave error intentionally so you know where to look. Now use this list of filters instead of String message to initiate search.
+        ArrayList<SearchFilter> searchFilters = ObjectsSharer.getSearchFilters();
+       //Request results and display them in a list
         new SearchBookTask().execute(bookTitleToSearch);
-        
-        
+             
 	}
 
 	private void pushDetailedScreen(int pos)
