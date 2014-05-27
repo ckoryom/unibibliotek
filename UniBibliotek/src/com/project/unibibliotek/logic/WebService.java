@@ -125,7 +125,10 @@ public class WebService {
 		}
 		else{
 			Log.e(TAG,"PrimoService is null");
-			return null;
+			if (books != null && books.size() > 0)
+				return books;
+			else
+				return null;
 		}
 	}
 
