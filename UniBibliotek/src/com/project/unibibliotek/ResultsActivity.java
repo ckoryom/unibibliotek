@@ -110,8 +110,10 @@ public class ResultsActivity extends ActionBarActivity
 		try {
 			Intent intent = new Intent(this, com.project.unibibliotek.DetailedActivity.class);
 			Book book = booksList.get(pos);
-			ObjectsSharer.setBook(book);
-	        startActivity(intent);
+			if (book != null) {
+				ObjectsSharer.setBook(book);
+		        startActivity(intent);
+			}
 		}
 		catch (Exception e) {
 			Log.e("DetailedActivity", e.getMessage());
@@ -143,6 +145,11 @@ public class ResultsActivity extends ActionBarActivity
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+	
+	public void fragmentClick(View v){
+	    Log.i("fragmentClick", "fragmentClick");
+	    return;
 	}
 
 }

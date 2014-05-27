@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.project.unibibliotek.model.Book;
+import com.project.unibibliotek.model.Location;
 import com.project.unibibliotek.utils.NetworkUtils;
 
 public class DetailedActivity extends Activity 
@@ -29,7 +30,7 @@ public class DetailedActivity extends Activity
 		
 		Book book = ObjectsSharer.getBook();
 		TextView titleTV = (TextView) findViewById(R.id.DescriptionTitleTextView);
-		titleTV.setText(book.getTitle());
+		titleTV.setText(book.getTitle() + "\n ISBN:" + book.getIsbn().get(0));
 		ImageView coverIV = (ImageView) findViewById(R.id.DescriptionBookImageView);
 		NetworkUtils networkUtils = new NetworkUtils();
 		Bitmap largeBitmap = networkUtils.getBitmapFromUrl(book.getImages().getLargeImage());
@@ -40,7 +41,25 @@ public class DetailedActivity extends Activity
 		descriptionTV.setText(book.getDescription());
 		Log.d(getClass().getName(),"Book description: "+book.getDescription());
 		TextView authorTV = (TextView) findViewById(R.id.DescriptionAuthorTextView);
-		authorTV.setText(book.getAuthor().getAuthorName()+", "+book.getYear()+"\n"+book.getAvailability().toString());
+		String rating = "";
+		if (book.getRating() != null) {
+			rating = "\nRating: " + book.getRating().getAverageRating() + "/5 -- " + book.getRating().getTotalRatings() + " votes\n";
+		}
+		String location = "Location: ";
+		if (book.getLocations()!=null) {
+			if (book.getLocations().size()>0) {
+				for (Location l:book.getLocations()) {
+					if (l.getSection() != null) {
+						location += l.getSection(); 
+					}
+					if (l.getSite() != null) {
+						location += " | " + l.getSite();
+					}
+				}
+				location = "\n" + location;
+			}
+		}
+		authorTV.setText("Author:" + book.getAuthor().getAuthorName()+", "+book.getYear()+"\n" + "Publisher: " + book.getPublisher() + "\n Status:" + book.getAvailability().toString() + rating + location);
 	}
 
 	@Override

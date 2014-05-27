@@ -37,17 +37,28 @@ public class GoogleBooksRestful {
 							JSONArray array = (JSONArray) json.get("items");
 							JSONObject item = (JSONObject) array.get(0);
 							JSONObject volume = (JSONObject) item.get("volumeInfo");
-							JSONObject images = (JSONObject) volume.get("imageLinks");
-							String smallImage = images.getString("smallThumbnail");
-							String largeImage = images.getString("thumbnail");
+							JSONObject images = null;
+							String smallImage = "";
+							String largeImage = "";
+							if (volume.has("imageLinks")) {
+								images = (JSONObject) volume.get("imageLinks");
+								smallImage = images.getString("smallThumbnail");
+								largeImage = images.getString("thumbnail");
+							}
+							if (volume.has("description")) {
+								book.setDescription(volume.getString("description"));
+							}
 							BookImage bookImage = new BookImage();
 							bookImage.setSmallImage(smallImage);
 							bookImage.setLargeImage(largeImage);
 							book.setImages(bookImage);
 							book.setNumberPages(volume.getInt("pageCount"));
-							Rating rating = new Rating();
-							rating.setTotalRatings(volume.getInt("ratingsCount"));
-							rating.setAverageRating(volume.getInt("averageRating"));
+							Rating rating = null;
+							if (volume.has("ratingsCount")) {
+								rating = new Rating();
+								rating.setTotalRatings(volume.getInt("ratingsCount"));
+								rating.setAverageRating(volume.getInt("averageRating"));
+							}
 							book.setRating(rating);
 							flag = true;
 							break;
@@ -56,7 +67,11 @@ public class GoogleBooksRestful {
 						else
 							position++;
 					}
+					else {
+						return book;
+					}
 				}
+				return book;
 				
 			}
 			return book;
