@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<webservice>
+<!--  <webservice>
     <wsdl>http://bc-primo.hosted.exlibrisgroup.com/PrimoWebServices/services/tags</wsdl>
     <scope>BCL</scope>
+</webservice>
+-->
+<webservice>
+    <wsdl>http://ubz-primo-test.hosted.exlibrisgroup.com/PrimoWebServices/services/tags</wsdl>
+    <scope>39UBZ_ALMA_DS</scope>
 </webservice>
