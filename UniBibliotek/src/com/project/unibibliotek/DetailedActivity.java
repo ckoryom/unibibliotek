@@ -11,11 +11,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.project.unibibliotek.logic.ImageCommonInterface;
 import com.project.unibibliotek.model.Book;
 import com.project.unibibliotek.model.Location;
 import com.project.unibibliotek.utils.NetworkUtils;
 
-public class DetailedActivity extends Activity 
+public class DetailedActivity extends Activity implements ImageCommonInterface 
 {
 
 	@Override
@@ -30,16 +32,26 @@ public class DetailedActivity extends Activity
 		
 		Book book = ObjectsSharer.getBook();
 		TextView titleTV = (TextView) findViewById(R.id.DescriptionTitleTextView);
-		titleTV.setText(book.getTitle() + "\n ISBN:" + book.getIsbn().get(0));
+		String title = "";
+		if (book.getTitle() != null && book.getTitle() != "") {
+			String isbn = "";
+			if (book.getIsbn() != null && book.getIsbn().size() > 0) {
+				isbn = book.getIsbn().get(0);
+			}
+			title = book.getTitle() + "\n ISBN:" + isbn;
+		}
+		titleTV.setText(title);
 		ImageView coverIV = (ImageView) findViewById(R.id.DescriptionBookImageView);
 		NetworkUtils networkUtils = new NetworkUtils();
-		Bitmap largeBitmap = networkUtils.getBitmapFromUrl(book.getImages().getLargeImage());
-		coverIV.setImageBitmap(largeBitmap);
-		Log.d(getClass().getName(),String.format("Image height: %d",largeBitmap.getHeight()));
-		System.out.printf("Image height: %d\n",largeBitmap.getHeight());
+		if (book.getImages() != null && book.getImages().getLargeImage() != null) {
+			imageLoader.displayImage(book.getImages().getSmallImage(), coverIV);
+		}
+		String description = "";
 		TextView descriptionTV = (TextView) findViewById(R.id.DescriptionDescriptionTextView);
-		descriptionTV.setText(book.getDescription());
-		Log.d(getClass().getName(),"Book description: "+book.getDescription());
+		if (book.getDescription() != null && book.getDescription() != "") {
+			description = book.getDescription();
+		}
+		descriptionTV.setText(description);
 		TextView authorTV = (TextView) findViewById(R.id.DescriptionAuthorTextView);
 		String rating = "";
 		if (book.getRating() != null) {

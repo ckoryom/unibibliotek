@@ -37,8 +37,13 @@ public class ResultsActivity extends ActionBarActivity
 		@Override
 		protected List<Book> doInBackground(ArrayList<SearchFilter>... params) {
 			librarian = new WebService();
-	        librarian.connect();
-	        return librarian.search(params[0]);
+	        if(librarian.connect()) {
+	        	return librarian.search(params[0]);
+	        }
+	        else
+	        	return null;
+	        
+	        
 			
 		}
 		
@@ -58,30 +63,38 @@ public class ResultsActivity extends ActionBarActivity
 	
 	private void paintBookList () {
 		//Check if list is empty. Not tested yet.
-        for (Book book: booksList)
-        {
-        	if (book.getTitle() == null)
-        		book.setTitle("No title.");
+        if (booksList != null && booksList.size() > 0) {
+        	
+	        
+			for (Book book: booksList)
+	        {
+	        	if (book.getTitle() == null)
+	        		book.setTitle("No title.");
+	        }
+	        if (booksList.size() == 0)
+	        {
+	        	Book book = new Book();
+	        	book.setTitle("No results found");
+	        	booksList.add(book);
+	        }
+	        
+	        ListView resultLV = (ListView) findViewById(R.id.resultListView);
+	        resultLV.setAdapter(new ResultsListAdapter(this, booksList));
+	        
+	        resultLV.setOnItemClickListener(new OnItemClickListener() 
+	        {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id)
+				{
+					pushDetailedScreen(position);
+				}
+	        });
         }
-        if (booksList.size() == 0)
-        {
-        	Book book = new Book();
-        	book.setTitle("No results found");
-        	booksList.add(book);
+        else {
+        	DialogController dialogController = new DialogController();
+        	dialogController.makeDialog(getString(R.string.connectionErrorTitle), getString(R.string.connectionErrorMessage),this);
         }
-        
-        ListView resultLV = (ListView) findViewById(R.id.resultListView);
-        resultLV.setAdapter(new ResultsListAdapter(this, booksList));
-        
-        resultLV.setOnItemClickListener(new OnItemClickListener() 
-        {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id)
-			{
-				pushDetailedScreen(position);
-			}
-        });
 	}
 	
 	@SuppressWarnings("unchecked")

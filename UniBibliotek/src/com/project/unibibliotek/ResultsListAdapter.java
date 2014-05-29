@@ -4,17 +4,22 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnCreateContextMenuListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.project.unibibliotek.logic.ImageCommonInterface;
 import com.project.unibibliotek.model.Book;
 import com.project.unibibliotek.utils.NetworkUtils;
 
-public class ResultsListAdapter extends BaseAdapter 
+public class ResultsListAdapter extends BaseAdapter implements ImageCommonInterface
 {
 	private List<Book> booksList;
 	Context context;
@@ -49,7 +54,9 @@ public class ResultsListAdapter extends BaseAdapter
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
+	
+	
+	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) 
 	{
@@ -66,16 +73,32 @@ public class ResultsListAdapter extends BaseAdapter
         ImageView imageTV = (ImageView)convertView.findViewById(R.id.resultsBookImageView);
         
         Book book = booksList.get(position);
-
-        bookNameTV.setText(book.getTitle());
-        authorNameTV.setText(book.getAuthor().getName()+" "+book.getAuthor().getLastName()+", "+book.getYear());
-        availabilityTV.setText(book.getAvailability().toString());
-        if (book.getImages() != null && book.getImages().getSmallImage() != null) {
-        	Bitmap smallImage = networkUtils.getBitmapFromUrl(book.getImages().getSmallImage());
-        	imageTV.setImageBitmap(smallImage);
+        if (book.getTitle() != null && book.getTitle() != ""){
+        	bookNameTV.setText(book.getTitle());
         }
-         
-
+        else {
+        	bookNameTV.setText("");
+        }
+        String author = "";
+        if (book.getAuthor().getName() != null){
+        	author += book.getAuthor().getName();
+        }
+        if (book.getAuthor().getLastName() != null) {
+        	author += " " + book.getAuthor().getLastName();
+        }
+        String year = "";
+        if (book.getYear() != null && book.getYear() != "") {
+        	year = book.getYear();
+        }
+        authorNameTV.setText(author + ", " + year);
+        String availability = "";
+        if (book.getAvailability() !=null) {
+        	availability = book.getAvailability().toString();
+        }
+        availabilityTV.setText(availability);
+        if (book.getImages() != null && book.getImages().getSmallImage() != null) {
+        	imageLoader.displayImage(book.getImages().getSmallImage(), imageTV, options, animationListener);
+        }
         return convertView;
 	}
 	
