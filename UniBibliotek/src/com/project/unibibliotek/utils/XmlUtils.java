@@ -120,6 +120,8 @@ public class XmlUtils {
 					break;
 				case XmlPullParser.START_TAG:
 					name = parser.getName();
+					if (name.equalsIgnoreCase("ERROR"))
+						return null;
 					if (name.equals("record")) {
 						currentBook = new Book();
 						author = new Author();

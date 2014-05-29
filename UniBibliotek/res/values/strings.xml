@@ -25,5 +25,9 @@
     <string name="detailed_activity_description">Description</string>
     <string name="detailed_activity_author">Author</string>
     <string name="image_content_description">image</string>
+    
+    <!-- Exception Messages -->
+    <string name="connectionErrorTitle">Connection Problem</string>
+    <string name="connectionErrorMessage">There was a problem trying to connect to the library service</string>
 
 </resources>

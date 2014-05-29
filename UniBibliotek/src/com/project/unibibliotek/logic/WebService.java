@@ -81,7 +81,11 @@ public class WebService {
 		try{
 			if (checkUrl()) {
 				primoService = new PrimoX(getFullUrl());
-				return true;
+				
+				//if (primoService.getConnectionTimeout() >= 0)
+					return true;
+				//else
+					//return false;
 			}
 			else {
 				return false;
@@ -119,6 +123,7 @@ public class WebService {
 			}
 			catch (Exception e){
 				Log.e(TAG,"Problem while searching primo: " + e.getMessage());
+				return null;
 			}
 			return books;
 			
